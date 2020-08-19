@@ -10,12 +10,25 @@
 #-------------------------------------------------#
 
 import cv2
- 
-cap = cv2.VideoCapture(0)
-#cap = cv2.VideoCapture("test.mp4") 
- 
-while cap.isOpened():
-    success, frame = cap.read()
+import platform
+
+src = 0
+
+if platform.system() == 'Windows' :
+   
+    captrue = cv2.VideoCapture( src , cv2.CAP_DSHOW )
+    
+else :
+    
+    captrue = cv2.VideoCapture( src )
+
+captrue.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+captrue.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
+while captrue.isOpened():
+    
+    success, frame = captrue.read()
+    
     if success:
   
         cv2.imshow('Camera Window', frame)
@@ -24,5 +37,5 @@ while cap.isOpened():
         if (key == 27): 
             break
  
-cap.release()
+captrue.release()
 cv2.destroyAllWindows()

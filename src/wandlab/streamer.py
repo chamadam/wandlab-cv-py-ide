@@ -30,7 +30,7 @@ class Streamer :
         self.width = 640
         self.height = 360
         self.buffer = 0
-        self.stat = True
+        self.stat = False
         self.current_time = time.time()
         self.preview_time = time.time()
         self.sec = 0
@@ -49,9 +49,13 @@ class Streamer :
     
         if platform.system() == 'Windows' :
             
-            self.capture = cv2.VideoCapture( src + cv2.CAP_DSHOW )
-            
+            self.capture = cv2.VideoCapture( src , cv2.CAP_DSHOW )
         
+        else :
+            
+            self.capture = cv2.VideoCapture( src )
+            
+        self.set_size( self.width, self.height )
         
         self.started = True
 
