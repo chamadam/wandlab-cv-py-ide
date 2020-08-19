@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# chamadam custom
+__pycache__
+.DS_Store
+venv
+wandlab-venv
+.settings/
+.project
+.pydevproject
