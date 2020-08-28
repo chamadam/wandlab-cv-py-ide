@@ -25,9 +25,9 @@ captrue.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
 
 while captrue.isOpened():
     
-    success, frame = captrue.read()
+    (grabbed, frame) = captrue.read()
     
-    if success:
+    if grabbed:
         cv2.imshow('Wandlab Camera Window', frame)
  
         key = cv2.waitKey(1) & 0xFF
