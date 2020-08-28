@@ -8,3 +8,17 @@
 # Version               : 0.1.0
 # Python Version        : 3.6+
 #-------------------------------------------------#
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.python.tools import freeze_graph
+
+class TF_CNN() :
+    
+    def __init__(self ) :
+        
+        pass
+    
+    def load_graph(self, model_path ) :
+        
+        path = tf.keras.utils.get_file()

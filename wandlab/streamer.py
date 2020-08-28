@@ -9,7 +9,6 @@
 # Python Version        : 3.6+
 #-------------------------------------------------#
 
-import os
 import time
 import cv2
 import imutils
@@ -25,40 +24,37 @@ class Streamer :
         if cv2.ocl.haveOpenCL() :
             cv2.ocl.setUseOpenCL(True)
             
-        self.video_path = 'data/video/'
         self.capture = None
+        self.thread = None
         self.width = 640
         self.height = 360
-        self.buffer = 0
         self.stat = False
         self.current_time = time.time()
         self.preview_time = time.time()
         self.sec = 0
-        self.started = False
         self.Q = Queue(maxsize=128)
-        
         self.started = False
-        self.thread = Thread(target=self.update, args=())
-        self.thread.daemon = False
-        self.thread.start()
-        self.file = None
-        
-    def connect(self, src = 0 ) :
+         
+    def run(self, src = 0 ) :
         
         self.stop()
     
-        if platform.system() == 'Windows' :
-            
+        if platform.system() == 'Windows' :        
             self.capture = cv2.VideoCapture( src , cv2.CAP_DSHOW )
         
         else :
-            
             self.capture = cv2.VideoCapture( src )
             
-        self.set_size( self.width, self.height )
+        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
+        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+        
+        if self.thread is None :
+            self.thread = Thread(target=self.update, args=())
+            self.thread.daemon = False
+            self.thread.start()
         
         self.started = True
-
+    
     def stop(self):
         
         self.started = False
@@ -68,6 +64,16 @@ class Streamer :
             self.capture.release()
             self.clear()
             
+    def update(self):
+                    
+        while True:
+
+            if self.started :
+                (grabbed, frame) = self.capture.read()
+                
+                if grabbed : 
+                    self.Q.put(frame)
+                          
     def clear(self):
         
         with self.Q.mutex:
@@ -81,19 +87,7 @@ class Streamer :
         
         return np.ones(shape=[self.height, self.width, 3], dtype=np.uint8)
     
-    def update(self):
-                    
-        while True:
-
-            if self.started :
-                
-                (grabbed, frame) = self.capture.read()
-                
-                if grabbed :
-                    
-                    self.Q.put(frame)
-                   
-    def bytescode(self ):
+    def bytescode(self):
         
         if not self.capture.isOpened():
             
@@ -103,8 +97,7 @@ class Streamer :
             
             frame = imutils.resize(self.read(), width=int(self.width) )
         
-            if self.stat :
-                
+            if self.stat :  
                 cv2.rectangle( frame, (0,0), (120,30), (0,0,0), -1)
                 fps = 'FPS : ' + str(self.fps())
                 cv2.putText  ( frame, fps, (10,20), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,255), 1, cv2.LINE_AA)
@@ -117,17 +110,14 @@ class Streamer :
         self.current_time = time.time()
         self.sec = self.current_time - self.preview_time
         self.preview_time = self.current_time
+        
         if self.sec > 0 :
             fps = round(1/(self.sec),1)
+            
         else :
             fps = 1
-        return fps    
-    def set_size(self, width, height):
-        
-        self.width = width
-        self.height = height
-        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
-        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+            
+        return fps
                    
     def __exit__(self) :
         print( '* streamer class exit')

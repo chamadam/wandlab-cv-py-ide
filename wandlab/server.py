@@ -16,8 +16,8 @@ from flask import stream_with_context
 
 from wandlab.streamer import Streamer
 
-app             = Flask( __name__ )
-streamer        = Streamer()
+app = Flask( __name__ )
+streamer = Streamer()
 
 @app.route('/stream')
 def stream():
@@ -34,11 +34,11 @@ def stream():
         
         print('[wandlab] ', 'stream error : ',str(e))
 
-def stream_gen( file ):   
+def stream_gen( src ):   
   
     try : 
         
-        streamer.connect( file )
+        streamer.run( src )
         
         while True :
             
