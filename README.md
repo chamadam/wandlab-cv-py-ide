@@ -1,5 +1,5 @@
-# wandlab-cv-python
-wandlab-cv-python
+# wandlab-cv-py-ide
+wandlab-cv-py-ide
 
 ![Alt text](https://wandlab.com/blog/wp-content/uploads/2020/08/opencv-window-test.png)
 ![Alt text](https://wandlab.com/blog/wp-content/uploads/2020/08/opencv-browser-test.png)
@@ -17,5 +17,5 @@ $ pip install opencv-contrib-python
 
 ## Run Application
 ```
-$ python wandlab.cv.py
+$ python wandlab.cv.ide.py
 ```
